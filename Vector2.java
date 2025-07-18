@@ -30,4 +30,25 @@ public class Vector2 {
     public int dot(Vector2 v2) {
         return (int) (this.x * v2.x +  this.y * v2.y);
     }
+
+    public Vector2 copy() {
+        return new Vector2(this.x, this.y);
+    }
+
+    public void increment_x(int x) {
+        this.x += x;
+    }
+
+    public void increment_y(int y) {
+        this.y += y;
+    }
+
+    public void add(Vector2 v2) {
+        this.x += v2.x;
+        this.y += v2.y;
+    }
+    
+    public Vector2 added(Vector2 v2) {
+        return new Vector2(this.x += v2.x, this.y += v2.y);
+    }
 }

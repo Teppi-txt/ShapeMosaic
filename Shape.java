@@ -1,5 +1,5 @@
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public class Shape {
     String name;
@@ -7,7 +7,7 @@ public class Shape {
 
 
     // overides
-    public void draw(Graphics g){
+    public void draw(Graphics2D g){
         throw new Error("Invalid draw call on empty shape.");
     }
 

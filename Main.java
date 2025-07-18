@@ -1,5 +1,5 @@
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -12,13 +12,15 @@ public class Main {
         Vector2 dimensions = new Vector2(image.getWidth(), image.getHeight());
 
         BufferedImage recreation = new BufferedImage((int) dimensions.x, (int) dimensions.y, 5);
-        Graphics g = recreation.getGraphics();
-
-
+        Graphics2D g = recreation.createGraphics();
 
         // create a test shape
-        Shape shape = new Rect(100, 100, new Vector2(100, 100), Color.BLUE);
+        Shape shape = new Rect(100, 100, new Vector2(100, 100), Color.BLUE, 45);
         shape.draw(g);
+
+        Shape shape2 = new Ellipse(100, 200, new Vector2(400, 100), Color.GREEN, 0);
+        shape2.draw(g);
+
 
         save_image(recreation, "images/output.jpg");
     }
@@ -30,8 +32,8 @@ public class Main {
             System.out.println(image);
             System.out.println("done");
             return image;
-        } catch (IOException e) { 
-            e.printStackTrace(); 
+        } catch (IOException e) {
+            System.err.println("");
         }
         return null;
     }
@@ -40,6 +42,6 @@ public class Main {
         try {
             File outputfile = new File(filepath);
             ImageIO.write(image, "jpg", outputfile);
-        } catch (Exception e) {}
+        } catch (IOException e) {}
     }
 }
