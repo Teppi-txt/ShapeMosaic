@@ -1,0 +1,33 @@
+public class Vector2 {
+    int x; 
+    int y;
+
+    public Vector2(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void print() {
+        System.out.print("(" + this.x + ", " + this.y + ")");
+    }
+
+    public void set(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public double length() {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    public void normalise() {
+        //get length of vector, multiply components by 1/length
+        double length = this.length();
+        this.x = (int) (this.x / length);
+        this.y = (int) (this.y / length);
+    }
+
+    public int dot(Vector2 v2) {
+        return (int) (this.x * v2.x +  this.y * v2.y);
+    }
+}
