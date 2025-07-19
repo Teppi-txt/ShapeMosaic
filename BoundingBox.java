@@ -6,4 +6,9 @@ public class BoundingBox {
         this.top_left = top_left;
         this.bot_right = bot_right;
     }
+
+    public void print() {
+        this.top_left.print();
+        this.bot_right.print();
+    }
 }

@@ -12,37 +12,49 @@ public class Main {
         BufferedImage recreation = new BufferedImage((int) dimensions.x, (int) dimensions.y, 5);
         var g = recreation.createGraphics();
 
-        for (int i = 0; i < 3; i++) {
-            // create a test shape
-            ShapeManager sm = new ShapeManager(dimensions.x, dimensions.y, image);
-            Shape shape = sm.generateShape();
-            shape.draw(g);
+        // for (int i = 0; i < 3; i++) {
+        //     // create a test shape
+        //     ShapeManager sm = new ShapeManager(dimensions.x, dimensions.y, image);
+        //     Shape shape = sm.generateShape();
+        //     shape.draw(g);
+
+        //     System.out.println(shape.get_type());
+
+        //     BoundingBox box = shape.get_bounding_box();
+        //     dimensions = box.bot_right.subtracted(box.top_left);
+        //     g.drawRect(box.top_left.x, box.top_left.y, dimensions.x, dimensions.y);
 
             
-            System.out.println(shape.get_type());
+        //     save_image(ShapeManager.deepCopy(recreation), "images/copy" + i + ".jpg");
+        // }
 
-            BoundingBox box = shape.get_bounding_box();
-            dimensions = box.bot_right.subtracted(box.top_left);
-            g.drawRect(box.top_left.x, box.top_left.y, dimensions.x, dimensions.y);
+        ShapeManager sm = new ShapeManager(dimensions.x, dimensions.y, image);
+        // Shape shape = sm.generateShape();
 
-            save_image(recreation, "images/output.jpg");
-        }
+        dimensions.print();
+
+        Shape shape = new Rect(350, 339, new Vector2(628, 215), 201);
+        shape.get_bounding_box().print();
+        shape.set_color(sm.getAverageColorOfShape(shape, image));
+
+        System.out.println(ShapeManager.squared_evaluation(image, image, shape));
+
+        shape.draw(g);
+    
+        save_image(recreation, "images/output.jpg");
     }
 
     static private BufferedImage read_image(String filepath) {
         try {
             File img = new File(filepath);
             BufferedImage image = ImageIO.read(img); 
-            System.out.println(image);
-            System.out.println("done");
             return image;
         } catch (IOException e) {
             System.err.println("");
         }
         return null;
     }
-
-    static private void save_image(BufferedImage image, String filepath) {
+    static public void save_image(BufferedImage image, String filepath) {
         try {
             File outputfile = new File(filepath);
             ImageIO.write(image, "jpg", outputfile);
