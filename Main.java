@@ -1,5 +1,3 @@
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -8,21 +6,27 @@ import javax.imageio.ImageIO;
 public class Main {
     public static void main(String[] args) {
         // CFrame frame = new CFrame(1200, 900);
-        BufferedImage image = read_image("images/test.jpg");
+        BufferedImage image = read_image("images/grid.jpeg");
         Vector2 dimensions = new Vector2(image.getWidth(), image.getHeight());
 
         BufferedImage recreation = new BufferedImage((int) dimensions.x, (int) dimensions.y, 5);
-        Graphics2D g = recreation.createGraphics();
+        var g = recreation.createGraphics();
 
-        // create a test shape
-        Shape shape = new Rect(100, 100, new Vector2(100, 100), Color.BLUE, 45);
-        shape.draw(g);
+        for (int i = 0; i < 3; i++) {
+            // create a test shape
+            ShapeManager sm = new ShapeManager(dimensions.x, dimensions.y, image);
+            Shape shape = sm.generateShape();
+            shape.draw(g);
 
-        Shape shape2 = new Ellipse(100, 200, new Vector2(400, 100), Color.GREEN, 0);
-        shape2.draw(g);
+            
+            System.out.println(shape.get_type());
 
+            BoundingBox box = shape.get_bounding_box();
+            dimensions = box.bot_right.subtracted(box.top_left);
+            g.drawRect(box.top_left.x, box.top_left.y, dimensions.x, dimensions.y);
 
-        save_image(recreation, "images/output.jpg");
+            save_image(recreation, "images/output.jpg");
+        }
     }
 
     static private BufferedImage read_image(String filepath) {

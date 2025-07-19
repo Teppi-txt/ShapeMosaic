@@ -49,6 +49,20 @@ public class Vector2 {
     }
     
     public Vector2 added(Vector2 v2) {
-        return new Vector2(this.x += v2.x, this.y += v2.y);
+        return new Vector2(this.x + v2.x, this.y + v2.y);
+    }
+
+    public Vector2 subtracted(Vector2 v2) {
+        return new Vector2(this.x - v2.x, this.y - v2.y);
+    }
+
+    public void floor(Vector2 v2) {
+        this.x = Math.max(this.x, v2.x);
+        this.y = Math.max(this.y, v2.y);
+    }
+
+    public void ceil(Vector2 v2) {
+        this.x = Math.min(this.x, v2.x);
+        this.y = Math.min(this.y, v2.y);
     }
 }

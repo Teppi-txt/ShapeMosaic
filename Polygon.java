@@ -2,13 +2,21 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class Polygon extends Shape {
-    String name;
     Vector2[] vertices;
     int angle;
 
-    public Polygon(Vector2[] vertices, Color color, int angle) { 
-        this.name = "Rect";
+    public Polygon(Vector2[] vertices, int angle, Color color) { 
+        this.type = "Polygon";
         this.color = color;
+
+        // position data
+        this.vertices = vertices;
+        this.angle = angle;
+    }
+
+    public Polygon(Vector2[] vertices, int angle) { 
+        this.type = "Polygon";
+        this.color = Color.BLACK;
 
         // position data
         this.vertices = vertices;
@@ -19,14 +27,34 @@ public class Polygon extends Shape {
     public void draw(Graphics2D g) {
         g.setColor(this.color);
 
-         int[] xPoints = new int[4];
-        int[] yPoints = new int[4];
+        int n = vertices.length;
 
-        for (int i = 0; i < 4; i++) {
+        int[] xPoints = new int[n];
+        int[] yPoints = new int[n];
+
+        for (int i = 0; i < n; i++) {
             xPoints[i] = vertices[i].x;
             yPoints[i] = vertices[i].y;
         }
 
-        g.fillPolygon(xPoints, yPoints, angle);
+        g.fillPolygon(xPoints, yPoints, n);
+    }
+
+    @Override
+    public BoundingBox get_bounding_box() {
+        Vector2 min_point = new Vector2(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        Vector2 max_point = new Vector2(Integer.MIN_VALUE, Integer.MIN_VALUE);
+
+        for (Vector2 v : this.vertices) {
+            if (v.x < min_point.x) {min_point.x = v.x;}
+
+            if (v.x > max_point.x) {max_point.x = v.x;}
+
+            if (v.y < min_point.y) {min_point.y = v.y;}
+
+            if (v.y > max_point.y) {max_point.y = v.y;}
+        }
+
+        return new BoundingBox(min_point, max_point);
     }
 }
