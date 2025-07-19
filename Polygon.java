@@ -57,4 +57,12 @@ public class Polygon extends Shape {
 
         return new BoundingBox(min_point, max_point);
     }
+
+    @Override
+    public void print_info() {
+        System.out.printf("Polygon Info:%nAngle: %d degrees%nVertices:%n", angle);
+        for (int i = 0; i < vertices.length; i++) {
+            System.out.printf("  Vertex %d: (%d, %d)%n", i + 1, vertices[i].x, vertices[i].y);
+        }
+    }
 }

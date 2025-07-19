@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class ShapeManager {
@@ -48,7 +50,7 @@ public class ShapeManager {
             int y = (int) (Math.random() * maxX - (height / 2));
             Vector2 position = new Vector2(x, y);
             
-            System.out.println(width + ", " + height + ", " + x + ", " + y + ", " + angle);
+            // System.out.println(width + ", " + height + ", " + x + ", " + y + ", " + angle);
 
             switch (shape) {
                 case SHAPE.Rect -> {
@@ -82,8 +84,6 @@ public class ShapeManager {
         // TODO: Optimisations here with bounding box
         BufferedImage tempImage = new BufferedImage(this.maxX, this.maxY, 5);
         int redSum = 0; int blueSum = 0; int greenSum = 0; int count = 0; //counts the sums of colors and n
-
-        System.out.println(tempImage.getRGB(0, 0));
 
         shape.set_color(Color.WHITE); //sets a temp color for the shape
         shape.draw(tempImage.createGraphics()); //draws the shape onto the tempImage
@@ -132,16 +132,24 @@ public class ShapeManager {
         return Color.BLUE;
     }
 
+    // add a bias later perhaps
+    public Map<Shape, Double> generate_shape_list(int length, BufferedImage current) {
+        Map<Shape, Double> returnList = new LinkedHashMap<>();
+
+        for (int i = 0; i < length; i++) {
+            Shape shape = generateShape();
+            returnList.put(shape, squared_evaluation(target, current, shape));
+        }
+        return returnList;
+    }
+
 
     public static BufferedImage deepCopy(BufferedImage source) {
-        long startTime = System.nanoTime();
 
         BufferedImage bi = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
         byte[] sourceData = ((DataBufferByte)source.getRaster().getDataBuffer()).getData();
         byte[] biData = ((DataBufferByte)bi.getRaster().getDataBuffer()).getData();
         System.arraycopy(sourceData, 0, biData, 0, sourceData.length);
-
-        System.out.println("Copying: " + (System.nanoTime() - startTime));
 
         return bi;
     }
@@ -184,8 +192,6 @@ public class ShapeManager {
                 }
             }
         }
-
-        System.out.println(pixels_checked);
         return improvement;
     }
 

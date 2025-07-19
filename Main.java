@@ -1,6 +1,8 @@
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import javax.imageio.ImageIO;
 
 public class Main {
@@ -10,37 +12,12 @@ public class Main {
         Vector2 dimensions = new Vector2(image.getWidth(), image.getHeight());
 
         BufferedImage recreation = new BufferedImage((int) dimensions.x, (int) dimensions.y, 5);
-        var g = recreation.createGraphics();
-
-        // for (int i = 0; i < 3; i++) {
-        //     // create a test shape
-        //     ShapeManager sm = new ShapeManager(dimensions.x, dimensions.y, image);
-        //     Shape shape = sm.generateShape();
-        //     shape.draw(g);
-
-        //     System.out.println(shape.get_type());
-
-        //     BoundingBox box = shape.get_bounding_box();
-        //     dimensions = box.bot_right.subtracted(box.top_left);
-        //     g.drawRect(box.top_left.x, box.top_left.y, dimensions.x, dimensions.y);
-
-            
-        //     save_image(ShapeManager.deepCopy(recreation), "images/copy" + i + ".jpg");
-        // }
-
+        Graphics2D g = recreation.createGraphics();
         ShapeManager sm = new ShapeManager(dimensions.x, dimensions.y, image);
-        // Shape shape = sm.generateShape();
 
-        dimensions.print();
+        Map map = sm.generate_shape_list(200, recreation);
 
-        Shape shape = new Rect(350, 339, new Vector2(628, 215), 201);
-        shape.get_bounding_box().print();
-        shape.set_color(sm.getAverageColorOfShape(shape, image));
-
-        System.out.println(ShapeManager.squared_evaluation(image, image, shape));
-
-        shape.draw(g);
-    
+        map.forEach((key, value) -> System.out.println(key + " " + value));
         save_image(recreation, "images/output.jpg");
     }
 

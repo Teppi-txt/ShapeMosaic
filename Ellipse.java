@@ -67,4 +67,10 @@ public class Ellipse extends Shape {
 
         return new BoundingBox(min_point, max_point);
     }
+
+    @Override
+    public void print_info() {
+        System.out.printf("Ellipse Info:%nWidth: %d%nHeight: %d%nTop Left: (%d, %d)%nAngle: %d degrees%n", 
+        this.width, this.height, this.top_left.x, this.top_left.y, this.angle);
+    }
 }

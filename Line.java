@@ -31,4 +31,11 @@ public class Line extends Shape {
 
         return new BoundingBox(min_point, max_point);
     }
+
+    @Override
+    public void print_info() {
+        System.out.println("Line Info:");
+        this.start.print();
+        this.end.print();
+    }
 }
