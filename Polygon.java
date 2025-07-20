@@ -79,4 +79,9 @@ public class Polygon extends Shape {
 
         return new Polygon(new_vertices, this.angle, this.color);
     }
+
+    @Override
+    public int get_approximate_size() {
+        return this.get_bounding_box().get_area();
+    }
 }

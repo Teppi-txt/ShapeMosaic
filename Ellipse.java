@@ -85,4 +85,9 @@ public class Ellipse extends Shape {
 
         return new Ellipse(new_width, new_height, new_position, new_angle, this.color);
     }
+
+    @Override
+    public int get_approximate_size() {
+        return this.width * this.height;
+    }
 }

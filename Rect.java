@@ -97,4 +97,9 @@ public class Rect extends Shape {
         // 0.1 mutation factor results in angle variance of 10*
         return new Rect(new_width, new_height, new_position, new_angle, this.color);
     }
+
+    @Override
+    public int get_approximate_size() {
+        return this.width * this.height;
+    }
 }

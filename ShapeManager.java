@@ -1,75 +1,66 @@
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.util.*;
-
 
 public class ShapeManager {
     int maxX; int maxY; BufferedImage target;
     static final int EMPTY_PIXEL = 0xFF000000;
+    Random random;
 
     enum SHAPE {
         Rect,
         Polygon,
-        Ellipse,
-        Line
+        Ellipse
     }
 
     public ShapeManager (int maxX, int maxY, BufferedImage target) {
         this.maxX = maxX;
         this.maxY = maxY;
         this.target = target;
+        this.random = new Random();
     }
 
-    public Shape generateShape() {
-
-        SHAPE shape = SHAPE.values()[new Random().nextInt(SHAPE.values().length - 1)];
+    public Shape generateShape(Integer area) {
+        SHAPE shape = SHAPE.values()[new Random().nextInt(SHAPE.values().length)];
         Shape returnShape = null;
+        int width; int height;
 
-        // first 3 ids are shapes
-        if (shape == SHAPE.Line) {
-            int x = (int) (Math.random() * maxX);
-            int y = (int) (Math.random() * maxY);
-            Vector2 start = new Vector2(x, y);
+        int angle = (int) (Math.random() * 360);
 
-            int x2 = (int) (Math.random() * maxX);
-            int y2 = (int) (Math.random() * maxY);
-            Vector2 end = new Vector2(x2, y2);
-
-            returnShape = new Line(start, end);
-            
+        //generates random dimensions for the shape, making sure it doesnt surpass the bounds of the image
+        if (area != null) {
+            int weighted_area = (int) (random.nextGaussian() * (area/4) + area);
+            width = Math.clamp((int) (Math.random() * weighted_area), 1, this.maxX);
+            height = Math.clamp((int) (weighted_area / width), 1, this.maxY);
         } else {
-            int angle = (int) (Math.random() * 360);
+            width = Math.max(1, (int) (Math.random() * maxX));
+            height = Math.max(1, (int) (Math.random() * maxY));
+        }
 
-            //generates random dimensions for the shape, making sure it doesnt surpass the bounds of the image
-            int width = (int) (Math.random() * maxX);
-            int height = (int) (Math.random() * maxY);
+        //this set of operations ensures the shape can be anywhere on the screen
+        int x = (int) (Math.random() * maxX - (width / 2));
+        int y = (int) (Math.random() * maxY - (height / 2));
+        Vector2 position = new Vector2(x, y);
+        
+        // System.out.println(width + ", " + height + ", " + x + ", " + y + ", " + angle);
 
-            //this set of operations ensures the shape can be anywhere on the screen
-            int x = (int) (Math.random() * maxX - (width / 2));
-            int y = (int) (Math.random() * maxX - (height / 2));
-            Vector2 position = new Vector2(x, y);
-            
-            // System.out.println(width + ", " + height + ", " + x + ", " + y + ", " + angle);
+        switch (shape) {
+            case SHAPE.Rect -> {
+                //rectangle case
+                returnShape = new Rect(width, height, position, angle);
+            }
+            case SHAPE.Ellipse -> {
+                returnShape = new Ellipse(width, height, position, angle);
+            }
+            case SHAPE.Polygon -> {
+                int polygonSize = (int) (Math.random() * 2) + 3;
+                Vector2[] vertices = new Vector2[polygonSize];
 
-            switch (shape) {
-                case SHAPE.Rect -> {
-                    //rectangle case
-                    returnShape = new Rect(width, height, position, angle);
+                for (int point = 0; point < polygonSize; point++) {
+                    vertices[point] = new Vector2((int) (Math.random() * maxX), (int) (Math.random() * maxY));
                 }
-                case SHAPE.Ellipse -> {
-                    returnShape = new Ellipse(width, height, position, angle);
-                }
-                case SHAPE.Polygon -> {
-                    int polygonSize = (int) (Math.random() * 2) + 3;
-                    Vector2[] vertices = new Vector2[polygonSize];
 
-                    for (int point = 0; point < polygonSize; point++) {
-                        vertices[point] = new Vector2((int) (Math.random() * maxX), (int) (Math.random() * maxY));
-                    }
-
-                    returnShape = new Polygon(vertices, angle);
-                }
+                returnShape = new Polygon(vertices, angle);
             }
         }
         
@@ -89,8 +80,6 @@ public class ShapeManager {
         shape.draw(tempImage.createGraphics()); //draws the shape onto the tempImage
 
         BoundingBox box = shape.get_bounding_box();
-
-        // long startTime = System.nanoTime();
 
         // TIL: loop bounds are calculated during each loop iteration
         int startX = Math.max(0, box.top_left.x);
@@ -112,46 +101,39 @@ public class ShapeManager {
             }
         }
 
-        // System.out.println("Optimised: " + (System.nanoTime() - startTime));
-
-        // startTime = System.nanoTime();
-
-        // for (int x = 0; x < this.maxX; x++) {
-        //     for (int y = 0; y < this.maxY; y++) {
-        //         //checks if the pixel color of the temp image isnt equal to 0, the default value
-        //         //means the shape that was drawn includes that pixel
-        //         if (tempImage.getRGB(x, y) != 0) {
-        //             int pixelColor = target.getRGB(x, y);
-        //             count += 1;
-        //             redSum += (pixelColor & 0xff0000) >> 16;
-        //             greenSum += (pixelColor & 0xff00) >> 8;
-        //             blueSum += (pixelColor & 0xff);
-        //         }
-        //     }
-        // }
-
-        // System.out.println("Unoptimised: " + (System.nanoTime() - startTime));
-
         if (count > 0) return new Color(redSum/count, greenSum/count, blueSum/count, 255);
         return Color.BLUE;
     }
 
-    // add a bias later perhaps
-    public ArrayList<Individual> generate_shape_list(int length, BufferedImage current) {
+    public ArrayList<Individual> generate_shape_list(int length, BufferedImage current, Integer area) {
         ArrayList<Individual> returnList = new ArrayList<>();
         if (target.getWidth() != current.getWidth() || target.getHeight() != current.getHeight()) {
             System.out.println("Unable to compare images with different dimensions.");
             return returnList;
         }
 
-        for (int i = 0; i < length; i++) {
-            Shape shape = generateShape();
+        // pure random (10%)
+        for (int i = 0; i < length * 0.2; i++) {
+            Shape shape = generateShape(null);
             double eval = squared_evaluation(target, current, shape);
 
             if (eval > 0) {
                 returnList.add(new Individual(shape, squared_evaluation(target, current, shape)));
             }
         }
+
+        // skewed to average size
+        for (int i = 0; i < length * 0.8; i++) {
+            Shape shape = generateShape(area);
+            double eval = squared_evaluation(target, current, shape);
+
+            if (eval > 0) {
+                returnList.add(new Individual(shape, squared_evaluation(target, current, shape)));
+            }
+        }
+
+        // skewed to difference mask
+        
         return returnList;
     }
 
@@ -166,20 +148,15 @@ public class ShapeManager {
         for (Individual i : list) {
             for (int m = 0; m < mutants_per_individual; m++) {
                 Shape mutated_shape = i.shape.mutate(mutation_factor);
-                mutants_list.add(new Individual(mutated_shape, squared_evaluation(target, current, mutated_shape)));
+                mutated_shape.set_color(getAverageColorOfShape(mutated_shape, target));
+                double eval = squared_evaluation(target, current, mutated_shape);
+
+                if (eval > i.fitness) {
+                    mutants_list.add(new Individual(mutated_shape, squared_evaluation(target, current, mutated_shape)));
+                }
             }
         }
         list.addAll(mutants_list);
-    }
-
-    public static BufferedImage deepCopy(BufferedImage source) {
-
-        BufferedImage bi = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
-        byte[] sourceData = ((DataBufferByte)source.getRaster().getDataBuffer()).getData();
-        byte[] biData = ((DataBufferByte)bi.getRaster().getDataBuffer()).getData();
-        System.arraycopy(sourceData, 0, biData, 0, sourceData.length);
-
-        return bi;
     }
 
     public static double squared_evaluation(BufferedImage target, BufferedImage current, Shape shape) {
@@ -218,6 +195,12 @@ public class ShapeManager {
             }
         }
         return improvement;
+    }
+
+    public static Vector2 generate_arbitrary_dimensions(int area) {
+        int width = (int) (Math.random() * area);
+        int length = (int) (area / width);
+        return new Vector2(width, length);
     }
 
     public static double manh_distance(int pixel1, int pixel2) {

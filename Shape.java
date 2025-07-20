@@ -59,5 +59,9 @@ public class Shape {
     public static double random_factor(double x) {
         return (Math.random() * 2 * x - x);
     }
+
+    public int get_approximate_size() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
 
