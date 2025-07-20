@@ -6,7 +6,7 @@ public class Ellipse extends Shape {
     Vector2 top_left;
     int angle;
 
-    public Ellipse(int width, int height, Vector2 top_left, Color color, int angle) { 
+    public Ellipse(int width, int height, Vector2 top_left, int angle, Color color) { 
         this.type = "Ellipse";
         this.color = color;
 
@@ -72,5 +72,17 @@ public class Ellipse extends Shape {
     public void print_info() {
         System.out.printf("Ellipse Info:%nWidth: %d%nHeight: %d%nTop Left: (%d, %d)%nAngle: %d degrees%n", 
         this.width, this.height, this.top_left.x, this.top_left.y, this.angle);
+    }
+
+    @Override
+    public Shape mutate(double mutation_factor) {
+        int new_width = (int) (this.width * 1 + random_factor(mutation_factor));
+        int new_height = (int) (this.height * 1 + random_factor(mutation_factor));
+        Vector2 new_position = new Vector2(this.top_left.x + (int) (this.width * random_factor(mutation_factor)), 
+                                           this.top_left.y + (int) (this.height * random_factor(mutation_factor)));
+        int new_angle = (int) (this.angle + random_factor(mutation_factor) * 10);
+        // 0.1 mutation factor results in angle variance of 10*
+
+        return new Ellipse(new_width, new_height, new_position, new_angle, this.color);
     }
 }

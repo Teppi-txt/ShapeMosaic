@@ -161,13 +161,15 @@ public class ShapeManager {
         }
     }
 
-    public void mutate_list(ArrayList<Individual> list, float mutation_factor, int mutants_per_individual) {
+    public void mutate_list(ArrayList<Individual> list, double mutation_factor, int mutants_per_individual, BufferedImage current) {
         ArrayList<Individual> mutants_list = new ArrayList<>();
         for (Individual i : list) {
             for (int m = 0; m < mutants_per_individual; m++) {
-                mutants_list.add(i.mutate(mutation_factor));
+                Shape mutated_shape = i.shape.mutate(mutation_factor);
+                mutants_list.add(new Individual(mutated_shape, squared_evaluation(target, current, mutated_shape)));
             }
         }
+        list.addAll(mutants_list);
     }
 
     public static BufferedImage deepCopy(BufferedImage source) {

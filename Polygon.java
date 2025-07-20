@@ -65,4 +65,18 @@ public class Polygon extends Shape {
             System.out.printf("  Vertex %d: (%d, %d)%n", i + 1, vertices[i].x, vertices[i].y);
         }
     }
+
+    @Override
+    public Shape mutate(double mutation_factor) {
+        BoundingBox box = get_bounding_box();
+        Vector2 dimensions = box.bot_right.subtracted(box.top_left);
+        Vector2[] new_vertices = new Vector2[this.vertices.length];
+
+        for (int i = 0; i < this.vertices.length; i++) {
+            new_vertices[i] = new Vector2(this.vertices[i].x + (int) (dimensions.x * 1 + random_factor(mutation_factor)), 
+                                          this.vertices[i].y + (int) (dimensions.y * 1 + random_factor(mutation_factor)));                              
+        }
+
+        return new Polygon(new_vertices, this.angle, this.color);
+    }
 }

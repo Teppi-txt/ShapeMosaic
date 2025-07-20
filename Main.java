@@ -21,6 +21,13 @@ public class Main {
             ArrayList<Individual> lst = sm.generate_shape_list(200, recreation);
 
             if (!lst.isEmpty()) {
+
+                for (int n = 0; n < 3; n++) {
+                    lst.sort(Comparator.comparingDouble(ind -> -ind.fitness));
+                    sm.prune_list(lst, 10);
+                    sm.mutate_list(lst, 0.1, 4, recreation);
+                    System.out.println(lst.size());
+                }
                 lst.sort(Comparator.comparingDouble(ind -> -ind.fitness));
                 Shape shape = lst.get(0).shape;
                 shape.draw(g);

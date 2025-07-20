@@ -52,8 +52,12 @@ public class Shape {
         this.bbox = bbox;
     }
 
-    public Shape mutate(float mutation_factor) {
+    public Shape mutate(double mutation_factor) {
         throw new Error("Mutating empty shape!");
+    }
+
+    public static double random_factor(double x) {
+        return (Math.random() * 2 * x - x);
     }
 }
 
