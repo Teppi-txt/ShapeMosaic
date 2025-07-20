@@ -1,12 +1,13 @@
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+
 
 public class ShapeManager {
     int maxX; int maxY; BufferedImage target;
+    static final int EMPTY_PIXEL = 0xFF000000;
+
     enum SHAPE {
         Rect,
         Polygon,
@@ -21,8 +22,8 @@ public class ShapeManager {
     }
 
     public Shape generateShape() {
-        
-        SHAPE shape = SHAPE.values()[new Random().nextInt(SHAPE.values().length)];
+
+        SHAPE shape = SHAPE.values()[new Random().nextInt(SHAPE.values().length - 1)];
         Shape returnShape = null;
 
         // first 3 ids are shapes
@@ -39,7 +40,6 @@ public class ShapeManager {
             
         } else {
             int angle = (int) (Math.random() * 360);
-            boolean filled = Math.random() * 2 > 0.3; //code for generating a skewed boolean
 
             //generates random dimensions for the shape, making sure it doesnt surpass the bounds of the image
             int width = (int) (Math.random() * maxX);
@@ -92,22 +92,26 @@ public class ShapeManager {
 
         // long startTime = System.nanoTime();
 
-        for (int x = Math.max(0, box.top_left.x); x < Math.min(box.bot_right.x, this.maxX); x++) {
-            for (int y = Math.max(0, box.top_left.y); y < Math.min(box.bot_right.y, this.maxY); y++) {
+        // TIL: loop bounds are calculated during each loop iteration
+        int startX = Math.max(0, box.top_left.x);
+        int endX = Math.min(box.bot_right.x, this.maxX);
+        int startY = Math.max(0, box.top_left.y);
+        int endY = Math.min(box.bot_right.y, this.maxY);
+
+        for (int x = startX; x < endX; x++) {
+            for (int y = startY; y < endY; y++) {
                 //checks if the pixel color of the temp image isnt equal to 0, the default value
                 //means the shape that was drawn includes that pixel
-                if (tempImage.getRGB(x, y) != 0xFF000000) {
+                if (tempImage.getRGB(x, y) != EMPTY_PIXEL) {
                     int pixelColor = target.getRGB(x, y);
                     count += 1;
                     redSum += (pixelColor & 0xff0000) >> 16;
                     greenSum += (pixelColor & 0xff00) >> 8;
                     blueSum += (pixelColor & 0xff);
-                    tempImage.setRGB(x, y, 0xFFFFC0CB);
                 }
             }
         }
 
-        Main.save_image(tempImage, "images/pink.jpg");
         // System.out.println("Optimised: " + (System.nanoTime() - startTime));
 
         // startTime = System.nanoTime();
@@ -133,16 +137,38 @@ public class ShapeManager {
     }
 
     // add a bias later perhaps
-    public Map<Shape, Double> generate_shape_list(int length, BufferedImage current) {
-        Map<Shape, Double> returnList = new LinkedHashMap<>();
+    public ArrayList<Individual> generate_shape_list(int length, BufferedImage current) {
+        ArrayList<Individual> returnList = new ArrayList<>();
+        if (target.getWidth() != current.getWidth() || target.getHeight() != current.getHeight()) {
+            System.out.println("Unable to compare images with different dimensions.");
+            return returnList;
+        }
 
         for (int i = 0; i < length; i++) {
             Shape shape = generateShape();
-            returnList.put(shape, squared_evaluation(target, current, shape));
+            double eval = squared_evaluation(target, current, shape);
+
+            if (eval > 0) {
+                returnList.add(new Individual(shape, squared_evaluation(target, current, shape)));
+            }
         }
         return returnList;
     }
 
+    public void prune_list(ArrayList<Individual> list, int survivors) {
+        if (list.size() > survivors) {
+            list.subList(survivors, list.size()).clear();
+        }
+    }
+
+    public void mutate_list(ArrayList<Individual> list, float mutation_factor, int mutants_per_individual) {
+        ArrayList<Individual> mutants_list = new ArrayList<>();
+        for (Individual i : list) {
+            for (int m = 0; m < mutants_per_individual; m++) {
+                mutants_list.add(i.mutate(mutation_factor));
+            }
+        }
+    }
 
     public static BufferedImage deepCopy(BufferedImage source) {
 
@@ -155,37 +181,34 @@ public class ShapeManager {
     }
 
     public static double squared_evaluation(BufferedImage target, BufferedImage current, Shape shape) {
-        
-        if (target.getWidth() != current.getWidth() || target.getHeight() != current.getHeight()) {
-            System.out.println("Unable to compare images with different dimensions.");
-            return Double.MAX_VALUE;
-        }
 
         double improvement = 0;
-        BufferedImage after = deepCopy(current);
+        BufferedImage after = new BufferedImage(target.getWidth(), target.getHeight(), 5);
         shape.draw(after.createGraphics());
         // loop over the bounding box of the shape in the image
 
         BoundingBox box = shape.get_bounding_box();
 
         // long startTime = System.nanoTime();
-        int pixels_checked = 0;
     
+        int startX = Math.max(0, box.top_left.x);
+        int endX = Math.min(box.bot_right.x, target.getWidth());
+        int startY = Math.max(0, box.top_left.y);
+        int endY = Math.min(box.bot_right.y, target.getHeight());
 
-        for (int x = Math.max(0, box.top_left.x); x < Math.min(box.bot_right.x, target.getWidth()); x++) {
-            for (int y = Math.max(0, box.top_left.y); y < Math.min(box.bot_right.y, target.getHeight()); y++) {
+        for (int x = startX; x < endX; x++) {
+            for (int y = startY; y < endY; y++) {
                 //checks if the pixel color of the temp image isnt equal to 0, the default value
                 //means the shape that was drawn includes that pixel
 
                 //positive is closer, negative is further
 
-                //TODO: optimise this to use getRGB array
-                int beforePixel = current.getRGB(x, y);
+                //TODO: optimise this to use getRGB array (this doesnt work idk why)
                 int afterPixel = after.getRGB(x, y);
-                int targetPixel = target.getRGB(x, y);
                 
-                if (beforePixel != afterPixel) {
-                    pixels_checked += 1;
+                if (afterPixel != EMPTY_PIXEL) {
+                    int beforePixel = current.getRGB(x, y);
+                    int targetPixel = target.getRGB(x, y);
 
                     // get the difference (improvement)
                    improvement += eucl_distance(beforePixel, targetPixel) - eucl_distance(afterPixel, targetPixel);
@@ -195,7 +218,7 @@ public class ShapeManager {
         return improvement;
     }
 
-    public static double manh_difference(int pixel1, int pixel2) {
+    public static double manh_distance(int pixel1, int pixel2) {
         int r1 = (pixel1 >> 16) & 0xFF;
         int g1 = (pixel1 >> 8) & 0xFF;
         int b1 = pixel1 & 0xFF;

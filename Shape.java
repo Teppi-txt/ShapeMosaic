@@ -43,5 +43,17 @@ public class Shape {
         Vector2 rotated = new Vector2((int) (ox * cos - oy * sin) + pivot.x, (int) (ox * sin + oy * cos) + pivot.y);
         return rotated;
     }
+
+    public BoundingBox getBbox() {
+        return bbox;
+    }
+
+    public void setBbox(BoundingBox bbox) {
+        this.bbox = bbox;
+    }
+
+    public Shape mutate(float mutation_factor) {
+        throw new Error("Mutating empty shape!");
+    }
 }
 
