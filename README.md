@@ -7,7 +7,7 @@ ShapeMosaic recreates a target image using basic polygons, aiming to use as few 
 
 ### Runtime
 - Added bounding box generation to each shape, which reduces calculations on unnecessary pixels during processes like fitness evaluation and shape generation.
-- Where possible, switched from accessing BufferedImage pixels with image.getRGB() and instead converted the iamge into a pixel array.
+- Where possible, switched from accessing BufferedImage pixels with image.getRGB() and instead converted the image into a pixel array.
 
 ### Effectiveness
 - Biases new shape generation to the average size of the last 5 shapes (since best shape size tends downwards as detail increases)
