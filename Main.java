@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
@@ -15,24 +16,44 @@ public class Main {
 
     public static void main(String[] args) {
         // CFrame frame = new CFrame(1200, 900);
-        BufferedImage image = read_image("images/test.jpg");
+        BufferedImage image = read_image("images/complex.jpg");
         Vector2 dimensions = new Vector2(image.getWidth(), image.getHeight());
 
         //timelines
         ArrayList<Integer> size_queue = new ArrayList<>();
 
-        // BufferedImage recreation = new BufferedImage((int) dimensions.x, (int) dimensions.y, 5);
-        BufferedImage recreation = read_image("images/output.jpg");
+        BufferedImage recreation = new BufferedImage((int) dimensions.x, (int) dimensions.y, 5);
+        // BufferedImage recreation = read_image("images/output.png");
         Graphics2D g = recreation.createGraphics();
+
+        RenderingHints hints = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        hints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHints(hints);
 
         ShapeManager sm = new ShapeManager(dimensions.x, dimensions.y, image);
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 2000; i++) {
             // calculate average size of shape
 
             long start = System.nanoTime();
-            ArrayList<Individual> lst = sm.generate_shape_list(200, recreation, get_average_size(size_queue));
-            BufferedImage mask = generate_image_mask(image, recreation);
+            // BufferedImage mask = generate_image_mask(image, recreation);
+            int[] mask_array = generate_mask_array(image, recreation);
+            // for (int m = 0; m < 1000; m++) {
+            //     int mask_value = (int) (Math.random() * mask_array[mask_array.length - 1]);
+            //     int index = Main.find_first_greater_than(mask_array, mask_value);
+
+            //     int x = index % dimensions.x;
+            //     int y = index / dimensions.x;
+                
+
+            //     mask.setRGB(x, y, Color.YELLOW.getRGB());
+
+            //     if (m % 100 == 0) {
+            //         save_image(mask, "images/mask_" + m + ".png");
+            //     }
+            // }
+
+            ArrayList<Individual> lst = sm.generate_shape_list(300, recreation, get_average_size(size_queue), mask_array);
 
             if (!lst.isEmpty()) {
 
@@ -40,8 +61,7 @@ public class Main {
                 for (int n = 0; n < 5; n++) {
                     lst.sort(Comparator.comparingDouble(ind -> -ind.fitness));
                     sm.prune_list(lst, 10);
-                    sm.mutate_list(lst, 0.4, 4, recreation);
-                    System.out.println(lst.size());
+                    sm.mutate_list(lst, 0.4, 10, recreation);
                 }
 
                 lst.sort(Comparator.comparingDouble(ind -> -ind.fitness));
@@ -52,6 +72,8 @@ public class Main {
                 int size = shape.get_approximate_size();
                 size_queue.add(size);
                 shape.draw(g);
+
+                System.out.println("---------------------------------------------------------------------");
                 shape.print_info();
 
                 // keep only the most recent 5
@@ -60,21 +82,25 @@ public class Main {
                 }
 
                 System.out.println(size_queue.toString());
+
                 if (get_average_size(size_queue) != null) {
                     System.out.println("The average shape size was: " + get_average_size(size_queue));
                 }
+                System.out.println("Generated shape " + i + " in: " + (System.nanoTime() - start) / 1000000 + "ms.");
+
             } else {
                 // if the algorithm fails to find a shape, perhaps the size queue is inaccurate (got stuck at a wayyy too high value)
                 // so we pop them, if size queue becomes empty, the system goes back to random
+
                 if (!size_queue.isEmpty()) {
                     size_queue.remove(0);
                 }
+                System.out.println("Failed to generate shape in: " + (System.nanoTime() - start) / 1000000 + "ms.");
             }
             
-            System.out.println("Generated shape in: " + (System.nanoTime() - start) / 1000000 + "ms.");
 
-            save_image(recreation, "images/output.jpg");
-            save_image(mask, "images/mask.jpg");
+            save_image(recreation, "images/output.png");
+            // save_image(mask, "images/mask.png");
         }
     }
 
@@ -95,7 +121,7 @@ public class Main {
         // max difference is sqrt(255^2 + 255^2 + 255^2)
 
         Vector2 dimensions = new Vector2(img1.getWidth(), img1.getHeight());
-        BufferedImage new_image = new BufferedImage((int) dimensions.x, (int) dimensions.y, 5);
+        BufferedImage new_image = new BufferedImage((int) dimensions.x, (int) dimensions.y, BufferedImage.TYPE_INT_ARGB);
 
         for (int x = 0; x < dimensions.x; x++) {
             for (int y = 0; y < dimensions.y; y++) {
@@ -119,19 +145,20 @@ public class Main {
         int[] mask_array = new int[dimensions.x * dimensions.y];
         int total = 0;
 
-        for (int x = 0; x < dimensions.x; x++) {
-            for (int y = 0; y < dimensions.y; y++) {
+        for (int y = 0; y < dimensions.y; y++) {
+            for (int x = 0; x < dimensions.x; x++) {
                 //checks if the pixel color of the temp image isnt equal to 0, the default value
                 //means the shape that was drawn includes that pixel
-                double distance = ShapeManager.eucl_distance(img1.getRGB(x, y), img2.getRGB(x, y));
+                int distance = (int) ShapeManager.eucl_distance(img1.getRGB(x, y), img2.getRGB(x, y));
                 total += distance;
                 mask_array[y * dimensions.x + x] = total;
             }
         }
+
         return mask_array;
     }
 
-    static private BufferedImage read_image(String filepath) {
+    static public BufferedImage read_image(String filepath) {
         try {
             File img = new File(filepath);
             BufferedImage image = ImageIO.read(img); 
@@ -145,7 +172,7 @@ public class Main {
     static public void save_image(BufferedImage image, String filepath) {
         try {
             File outputfile = new File(filepath);
-            ImageIO.write(image, "jpg", outputfile);
+            ImageIO.write(image, "png", outputfile);
         } catch (IOException e) {}
     }
 
@@ -157,4 +184,22 @@ public class Main {
 
         return bi;
     }
+
+    public static Integer find_first_greater_than(int[] array, int x) {
+        int left = 0;
+        int right = array.length - 1;
+        Integer result = 0; // default if no greater element is found
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (array[mid] > x) {
+                result = mid;       // candidate for first greater
+                right = mid - 1;    // look on the left side
+            } else {
+                left = mid + 1;     // look on the right side
+            }
+        }
+        return result;
+    }  
 }

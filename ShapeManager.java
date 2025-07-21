@@ -20,7 +20,7 @@ public class ShapeManager {
         this.random = new Random();
     }
 
-    public Shape generateShape(Integer area) {
+    public Shape generateShape(Integer area, int[] position_mask) {
         SHAPE shape = SHAPE.values()[new Random().nextInt(SHAPE.values().length)];
         Shape returnShape = null;
         int width; int height;
@@ -37,10 +37,17 @@ public class ShapeManager {
             height = Math.max(1, (int) (Math.random() * maxY));
         }
 
-        //this set of operations ensures the shape can be anywhere on the screen
-        int x = (int) (Math.random() * maxX - (width / 2));
-        int y = (int) (Math.random() * maxY - (height / 2));
-        Vector2 position = new Vector2(x, y);
+        // this set of operations ensures the shape can be anywhere on the screen
+        // so position mask is a series of increasing values corresponding to pixels
+
+        // get a random value within the mask
+        int mask_value = (int) (Math.random() * position_mask[position_mask.length - 1]);
+        int index = Main.find_first_greater_than(position_mask, mask_value);
+
+        int x = index % maxX;
+        int y = index / maxX;
+
+        Vector2 position = new Vector2(x - width/2, y - height/2);
         
         // System.out.println(width + ", " + height + ", " + x + ", " + y + ", " + angle);
 
@@ -105,8 +112,9 @@ public class ShapeManager {
         return Color.BLUE;
     }
 
-    public ArrayList<Individual> generate_shape_list(int length, BufferedImage current, Integer area) {
+    public ArrayList<Individual> generate_shape_list(int length, BufferedImage current, Integer area, int[] mask_array) {
         ArrayList<Individual> returnList = new ArrayList<>();
+
         if (target.getWidth() != current.getWidth() || target.getHeight() != current.getHeight()) {
             System.out.println("Unable to compare images with different dimensions.");
             return returnList;
@@ -114,7 +122,7 @@ public class ShapeManager {
 
         // pure random (10%)
         for (int i = 0; i < length * 0.2; i++) {
-            Shape shape = generateShape(null);
+            Shape shape = generateShape(null, mask_array);
             double eval = squared_evaluation(target, current, shape);
 
             if (eval > 0) {
@@ -124,7 +132,7 @@ public class ShapeManager {
 
         // skewed to average size
         for (int i = 0; i < length * 0.8; i++) {
-            Shape shape = generateShape(area);
+            Shape shape = generateShape(area, mask_array);
             double eval = squared_evaluation(target, current, shape);
 
             if (eval > 0) {
