@@ -17,5 +17,7 @@ ShapeMosaic recreates a target image using basic polygons, aiming to use as few 
 - Custom function to handle population/generation/children over time, as a smaller population is needed early on (since the image is so unrefined) and much more important later on (when detail is higher)
 
 ## Example Renders
-<img width="719" height="1280" alt="cat_recreation" src="https://github.com/user-attachments/assets/656338fe-092e-443b-a72f-4e74b2a97fde" />
-<img width="618" height="1024" alt="output" src="https://github.com/user-attachments/assets/066208e5-9e7a-4cd2-a396-3d611d2d2363" />
+<p align="center" margin="0" padding="0" >
+<img height="600" alt="cat_recreation" src="https://github.com/user-attachments/assets/656338fe-092e-443b-a72f-4e74b2a97fde" />
+<img height="600" alt="output" src="https://github.com/user-attachments/assets/066208e5-9e7a-4cd2-a396-3d611d2d2363" />
+</p>
