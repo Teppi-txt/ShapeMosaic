@@ -5,6 +5,7 @@ ShapeMosaic recreates a target image using basic polygons, aiming to use as few 
 
 The program uses a genetic algorithm to approximate the best shape, which is an effective but also relatively slow approach. Back in 2022, this resulted in extremely slow renders of up to 13 hours, whereas this optimised version can achieve similar renders in less than 2 hours.
 
+
 ## Optimisations
 
 ### Runtime
@@ -31,3 +32,5 @@ The program uses a genetic algorithm to approximate the best shape, which is an 
   <img width="400"  alt="500" src="https://github.com/user-attachments/assets/a02b8e31-d431-4523-a13e-b80eec9a7744" />
   <img width="400" alt="1000" src="https://github.com/user-attachments/assets/5e1e3da0-ce5b-4e41-bb7c-74537b2ab789" />
 </p>
+
+> The project does not have a GUI or executable compilation currently, so it is left as a pure java project which can be edited via an IDE or code editor. There aren't any plans for a GUI in the near future.
