@@ -88,6 +88,13 @@ public class Rect extends Shape {
     }
 
     @Override
+    public String to_string() {
+        String template = "Rect(width: " + this.width + ", height: " + this.height + ", top_left: (" + this.top_left.x + 
+                          ", " + this.top_left.y + "), angle: " + this.angle + ", color: " + this.color.toString() + "))";
+        return template;
+    }
+
+    @Override
     public Shape mutate(double mutation_factor) {
         int new_width = (int) (this.width * 1 + random_factor(mutation_factor));
         int new_height = (int) (this.height * 1 + random_factor(mutation_factor));

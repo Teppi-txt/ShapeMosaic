@@ -48,6 +48,10 @@ public class Shape {
         return bbox;
     }
 
+    public String to_string() {
+        return "This shape is empty.";
+    }
+
     public void setBbox(BoundingBox bbox) {
         this.bbox = bbox;
     }

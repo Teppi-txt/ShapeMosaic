@@ -18,9 +18,8 @@ public class Main {
     static final int GENERATION_COUNT = 8;
 
     // enable if you want to continue from a previous render/image, with filename "output.png".
-    static boolean use_existing_image = false;
+    static boolean use_existing_image = true;
     static boolean generate_mask = true;
-
 
     public static void main(String[] args) {
         BufferedImage image = read_image("images/inputs/butter.jpg");
@@ -68,18 +67,14 @@ public class Main {
                 shape.draw(g);
 
                 System.out.println("---------------------------------------------------------------------");
-                shape.print_info();
+                System.out.println(shape.to_string());
 
                 // keep only the most recent 5
                 if (size_queue.size() > TIMELINE_SIZE) {
                     size_queue.remove(0);
                 }
 
-                System.out.println(size_queue.toString());
-
-                if (get_average_size(size_queue) != null) {
-                    System.out.println("The average shape size was: " + get_average_size(size_queue));
-                }
+                if (get_average_size(size_queue) != null) { System.out.println("The average shape size was: " + get_average_size(size_queue));}
                 System.out.println("Generated shape " + i + " in: " + (System.nanoTime() - start) / 1000000 + "ms.");
 
             } else {
@@ -92,9 +87,7 @@ public class Main {
                 System.out.println("Failed to generate shape in: " + (System.nanoTime() - start) / 1000000 + "ms.");
             }
             
-
             save_image(recreation, "images/output.png");
-
         }
     }
 

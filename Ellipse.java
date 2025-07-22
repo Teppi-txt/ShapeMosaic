@@ -90,4 +90,11 @@ public class Ellipse extends Shape {
     public int get_approximate_size() {
         return this.width * this.height;
     }
+
+    @Override
+    public String to_string() {
+        String template = "Rect(width: " + this.width + ", height: " + this.height + ", top_left: (" + this.top_left.x + 
+                          ", " + this.top_left.y + "), angle: " + this.angle + ", color: " + this.color.toString() + "))";
+        return template;
+    }
 }

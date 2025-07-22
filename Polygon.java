@@ -84,4 +84,14 @@ public class Polygon extends Shape {
     public int get_approximate_size() {
         return this.get_bounding_box().get_area();
     }
+
+    @Override
+    public String to_string() {
+        String template = "Polygon(vertices: [";
+        for (Vector2 v : this.vertices) {
+            template += "(" + v.x + ", " + v.y + ")";
+        }
+        template += "], color: " + this.color.toString();
+        return template;
+    }
 }
