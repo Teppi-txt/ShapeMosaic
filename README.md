@@ -1,4 +1,4 @@
-# ShapeMosaic 🎨
+# ShapeMosaic
 
 ## Overview 📐
 > The project does not have a GUI or executable compilation currently, so it is left as a pure java project which can be edited via an IDE or code editor. There aren't any plans for a GUI in the near future.
