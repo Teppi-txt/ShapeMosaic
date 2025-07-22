@@ -13,17 +13,21 @@ public class Main {
     static final double MAX_PIXEL_DISTANCE = Math.sqrt(255*255 + 255*255 + 255*255);
     static final int TIMELINE_SIZE = 5;
 
+    static final int SHAPE_LIMIT = 3000;
+    static final double MUTATION_FACTOR = 0.4;
+    static final int GENERATION_COUNT = 8;
+
+    // enable if you want to continue from a previous render/image, with filename "output.png".
+    static boolean use_existing_image = true;
+
 
     public static void main(String[] args) {
-        // CFrame frame = new CFrame(1200, 900);
-        BufferedImage image = read_image("images/complex.jpg");
+        BufferedImage image = read_image("images/inputs/cacti.jpg");
         Vector2 dimensions = new Vector2(image.getWidth(), image.getHeight());
 
         //timelines
         ArrayList<Integer> size_queue = new ArrayList<>();
-
-        BufferedImage recreation = new BufferedImage((int) dimensions.x, (int) dimensions.y, 5);
-        // BufferedImage recreation = read_image("images/output.png");
+        BufferedImage recreation = use_existing_image ? read_image("images/output.png") : new BufferedImage((int) dimensions.x, (int) dimensions.y, 5);
         Graphics2D g = recreation.createGraphics();
 
         RenderingHints hints = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -32,7 +36,7 @@ public class Main {
 
         ShapeManager sm = new ShapeManager(dimensions.x, dimensions.y, image);
 
-        for (int i = 0; i < 2000; i++) {
+        for (int i = 0; i < SHAPE_LIMIT; i++) {
             // calculate average size of shape
 
             long start = System.nanoTime();
@@ -58,10 +62,10 @@ public class Main {
             if (!lst.isEmpty()) {
 
                 // preprocessing
-                for (int n = 0; n < 5; n++) {
+                for (int n = 0; n < GENERATION_COUNT; n++) {
                     lst.sort(Comparator.comparingDouble(ind -> -ind.fitness));
                     sm.prune_list(lst, 10);
-                    sm.mutate_list(lst, 0.4, 10, recreation);
+                    sm.mutate_list(lst, MUTATION_FACTOR, 10, recreation);
                 }
 
                 lst.sort(Comparator.comparingDouble(ind -> -ind.fitness));
@@ -100,6 +104,10 @@ public class Main {
             
 
             save_image(recreation, "images/output.png");
+
+            if (i % 500 == 0 || i == 250) {
+                save_image(recreation, "images/output" + i + ".png");
+            }
             // save_image(mask, "images/mask.png");
         }
     }
