@@ -37,6 +37,7 @@ Different shape quantities produce different styles of render, ranging from a "l
   <img width="400"  alt="500" src="https://github.com/user-attachments/assets/a02b8e31-d431-4523-a13e-b80eec9a7744" />
   <img width="400" alt="1000" src="https://github.com/user-attachments/assets/5e1e3da0-ce5b-4e41-bb7c-74537b2ab789" />
   <img width="400" alt="1500" src="https://github.com/user-attachments/assets/bf1a2cf3-a6ab-415b-b04d-74d2713645c8" />
-  <img width="400" alt="output2000" src="https://github.com/user-attachments/assets/bd3e6ca3-3541-4fbb-aeef-0b1b38fc0484" />
-  <img width="400" alt="output2500" src="https://github.com/user-attachments/assets/b8cd7df0-e9a0-4a8f-8d64-66b01b3c3127" />
+  <img width="400" alt="2000" src="https://github.com/user-attachments/assets/da7d0c05-5b19-492b-a7b3-68f7144dcd27" />
+<img width="400" alt="2500" src="https://github.com/user-attachments/assets/ba79b639-defe-44e2-aec6-8dc4564fdd8b" />
+
 </p>
