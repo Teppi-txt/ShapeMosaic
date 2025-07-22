@@ -26,6 +26,8 @@ The program uses a genetic algorithm to approximate the best shape, which is an 
 </p>
 
 ## Levels of Detail
-<img width="400" alt="250" src="https://github.com/user-attachments/assets/14ab9bb2-d936-468c-b38d-4a40acc5cd67" />
-<img width="400"  alt="500" src="https://github.com/user-attachments/assets/a02b8e31-d431-4523-a13e-b80eec9a7744" />
-<img width="400" alt="1000" src="https://github.com/user-attachments/assets/5e1e3da0-ce5b-4e41-bb7c-74537b2ab789" />
+<p align="center" margin="0" padding="0" >
+  <img width="400" alt="250" src="https://github.com/user-attachments/assets/14ab9bb2-d936-468c-b38d-4a40acc5cd67" />
+  <img width="400"  alt="500" src="https://github.com/user-attachments/assets/a02b8e31-d431-4523-a13e-b80eec9a7744" />
+  <img width="400" alt="1000" src="https://github.com/user-attachments/assets/5e1e3da0-ce5b-4e41-bb7c-74537b2ab789" />
+</p>
