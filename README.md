@@ -13,6 +13,7 @@ The program uses a genetic algorithm to approximate the best shape, which is an 
 ### Runtime 🏃
 - Added bounding box generation to each shape, which reduces calculations on unnecessary pixels during processes like fitness evaluation and shape generation.
 - Where possible, switched from accessing BufferedImage pixels with `image.getRGB()` and instead converted the image into a pixel array.
+- Adjusted evaluation to calculate improvement over similarity score, as improvement can be calculated within the bounding box while similarity cannot.
 
 ### Shape Generation 🔵
 - Biases new shape generation to the average size of the last 5 shapes (since best shape size tends downwards as detail increases)
