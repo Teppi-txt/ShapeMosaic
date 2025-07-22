@@ -3,7 +3,7 @@
 ## Overview
 > The project does not have a GUI or executable compilation currently, so it is left as a pure java project which can be edited via an IDE or code editor. There aren't any plans for a GUI in the near future.
 
-ShapeMosaic recreates a target image using basic polygons, aiming to use as few shapes as possible. The project is an improved version of my other project _"Polygon Image Recreation"_ in 2022, which adds optimizations for both shape generation and runtime, as well as cleaning up the codebase.
+**ShapeMosaic** recreates a target image using basic polygons, aiming to use as few shapes as possible. The project is an improved version of my other project _"Polygon Image Recreation"_ in 2022, which adds optimizations for both shape generation and runtime, as well as cleaning up the codebase.
 
 The program uses a genetic algorithm to approximate the best shape, which is an effective but also relatively slow approach. Back in 2022, this resulted in extremely slow renders of up to 13 hours, whereas this optimised version can achieve similar renders in less than 2 hours.
 
