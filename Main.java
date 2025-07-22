@@ -18,12 +18,12 @@ public class Main {
     static final int GENERATION_COUNT = 8;
 
     // enable if you want to continue from a previous render/image, with filename "output.png".
-    static boolean use_existing_image = true;
-    static boolean generate_mask = false;
+    static boolean use_existing_image = false;
+    static boolean generate_mask = true;
 
 
     public static void main(String[] args) {
-        BufferedImage image = read_image("images/inputs/cacti.jpg");
+        BufferedImage image = read_image("images/inputs/butter.jpg");
         Vector2 dimensions = new Vector2(image.getWidth(), image.getHeight());
 
         //timelines
@@ -95,9 +95,6 @@ public class Main {
 
             save_image(recreation, "images/output.png");
 
-            if (i % 500 == 0 || i == 250) {
-                save_image(recreation, "images/output" + i + ".png");
-            }
         }
     }
 
