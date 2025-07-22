@@ -1,6 +1,6 @@
-# ShapeMosaic
+# ShapeMosaic 🎨
 
-## Overview
+## Overview 📐
 > The project does not have a GUI or executable compilation currently, so it is left as a pure java project which can be edited via an IDE or code editor. There aren't any plans for a GUI in the near future.
 
 **ShapeMosaic** recreates a target image using basic polygons, aiming to use as few shapes as possible. The project is an improved version of my other project _"Polygon Image Recreation"_ in 2022, which adds optimizations for both shape generation and runtime, as well as cleaning up the codebase.
@@ -8,17 +8,17 @@
 The program uses a genetic algorithm to approximate the best shape, which is an effective but also relatively slow approach. Back in 2022, this resulted in extremely slow renders of up to 13 hours, whereas this optimised version can achieve similar renders in less than 2 hours.
 
 
-## Optimisations
+## Optimisations 
 
-### Runtime
+### Runtime 🏃
 - Added bounding box generation to each shape, which reduces calculations on unnecessary pixels during processes like fitness evaluation and shape generation.
 - Where possible, switched from accessing BufferedImage pixels with `image.getRGB()` and instead converted the image into a pixel array.
 
-### Shape Generation
+### Shape Generation 🔵
 - Biases new shape generation to the average size of the last 5 shapes (since best shape size tends downwards as detail increases)
 - Generating a difference mask between the recreation and target image, and biasing new shapes towards pixels with a greater difference.
 
-### Planned
+### Planned 🏗️
 - Custom function to handle _population/generation/children_ over time, as a smaller population is needed early on (since the image is so unrefined) and much more important later on (when detail is higher)
 
 ## Example Renders
