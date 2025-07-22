@@ -44,12 +44,11 @@ public class ShapeManager {
         int mask_value = (int) (Math.random() * position_mask[position_mask.length - 1]);
         int index = Main.find_first_greater_than(position_mask, mask_value);
 
+        // isolate coordinates based on array index
         int x = index % maxX;
         int y = index / maxX;
 
         Vector2 position = new Vector2(x - width/2, y - height/2);
-        
-        // System.out.println(width + ", " + height + ", " + x + ", " + y + ", " + angle);
 
         switch (shape) {
             case SHAPE.Rect -> {
@@ -79,7 +78,6 @@ public class ShapeManager {
     public Color getAverageColorOfShape(Shape shape, BufferedImage target) {
         //sets up a blank image with the same dimensions as the target
 
-        // TODO: Optimisations here with bounding box
         BufferedImage tempImage = new BufferedImage(this.maxX, this.maxY, 5);
         int redSum = 0; int blueSum = 0; int greenSum = 0; int count = 0; //counts the sums of colors and n
 
@@ -120,7 +118,8 @@ public class ShapeManager {
             return returnList;
         }
 
-        // pure random (10%)
+        // pure random (20%)
+        // we need some pure randomness for generation diversity, otherwise we could be finding local maxima
         for (int i = 0; i < length * 0.2; i++) {
             Shape shape = generateShape(null, mask_array);
             double eval = squared_evaluation(target, current, shape);
@@ -140,8 +139,6 @@ public class ShapeManager {
             }
         }
 
-        // skewed to difference mask
-        
         return returnList;
     }
 
@@ -231,9 +228,7 @@ public class ShapeManager {
         int r2 = (pixel2 >> 16) & 0xFF;
         int g2 = (pixel2 >> 8) & 0xFF;
         int b2 = pixel2 & 0xFF;
-
-        // System.out.printf("rgb1: (%d,%d,%d), rgb2: (%d,%d,%d)%n", r1, g1, b1, r2, g2, b2);
-
+        
         return Math.sqrt(
             Math.pow(r1 - r2, 2) + Math.pow(g1 - g2, 2) + Math.pow(b1 - b2, 2)
         );

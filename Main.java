@@ -19,6 +19,7 @@ public class Main {
 
     // enable if you want to continue from a previous render/image, with filename "output.png".
     static boolean use_existing_image = true;
+    static boolean generate_mask = false;
 
 
     public static void main(String[] args) {
@@ -37,25 +38,14 @@ public class Main {
         ShapeManager sm = new ShapeManager(dimensions.x, dimensions.y, image);
 
         for (int i = 0; i < SHAPE_LIMIT; i++) {
-            // calculate average size of shape
-
             long start = System.nanoTime();
-            // BufferedImage mask = generate_image_mask(image, recreation);
+
+            if (generate_mask) {
+                BufferedImage mask = generate_image_mask(image, recreation);
+                save_image(mask, "images/mask.png");
+            }
+
             int[] mask_array = generate_mask_array(image, recreation);
-            // for (int m = 0; m < 1000; m++) {
-            //     int mask_value = (int) (Math.random() * mask_array[mask_array.length - 1]);
-            //     int index = Main.find_first_greater_than(mask_array, mask_value);
-
-            //     int x = index % dimensions.x;
-            //     int y = index / dimensions.x;
-                
-
-            //     mask.setRGB(x, y, Color.YELLOW.getRGB());
-
-            //     if (m % 100 == 0) {
-            //         save_image(mask, "images/mask_" + m + ".png");
-            //     }
-            // }
 
             ArrayList<Individual> lst = sm.generate_shape_list(300, recreation, get_average_size(size_queue), mask_array);
 
@@ -74,7 +64,7 @@ public class Main {
                 Shape shape = lst.get(0).shape;
 
                 int size = shape.get_approximate_size();
-                size_queue.add(size);
+                size_queue.add(Math.max(size, 4)); //add a minimum size to prevent having shapes of 1 pixel
                 shape.draw(g);
 
                 System.out.println("---------------------------------------------------------------------");
@@ -108,7 +98,6 @@ public class Main {
             if (i % 500 == 0 || i == 250) {
                 save_image(recreation, "images/output" + i + ".png");
             }
-            // save_image(mask, "images/mask.png");
         }
     }
 
