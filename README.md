@@ -3,6 +3,8 @@
 ## Overview
 ShapeMosaic recreates a target image using basic polygons, aiming to use as few shapes as possible. The project is an improved version of my other project "Polygon Image Recreation" in 2022, which adds optimizations for both shape generation and runtime, as well as cleaning up the codebase.
 
+The program uses a genetic algorithm to approximate the best shape, which is an effective but also relatively slow approach. Back in 2022, this resulted in extremely slow renders of up to 13 hours, whereas this optimised version can achieve similar renders in less than 2 hours.
+
 ## Optimisations
 
 ### Runtime
