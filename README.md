@@ -24,9 +24,11 @@ The program uses a genetic algorithm to approximate the best shape, which is an 
 
 ## Example Renders
 <p align="center" margin="50px" padding="0" >
-<img height="600" alt="cat_recreation" src="https://github.com/user-attachments/assets/656338fe-092e-443b-a72f-4e74b2a97fde" />
-<img height="600" alt="output" src="https://github.com/user-attachments/assets/066208e5-9e7a-4cd2-a396-3d611d2d2363" />
-<img width="708" alt="output" src="https://github.com/user-attachments/assets/bf08d888-f953-4b11-a15f-33813dd8b2da" />
+  <img width="708" alt="output" src="https://github.com/user-attachments/assets/bf08d888-f953-4b11-a15f-33813dd8b2da" />
+  <img height="600" alt="cat_recreation" src="https://github.com/user-attachments/assets/656338fe-092e-443b-a72f-4e74b2a97fde" />
+  <img height="600" alt="output" src="https://github.com/user-attachments/assets/066208e5-9e7a-4cd2-a396-3d611d2d2363" />
+  <img width="708" alt="image" src="https://github.com/user-attachments/assets/ad8ae645-f01e-4914-a623-ee96f6e413bb" />
+
 </p>
 
 
