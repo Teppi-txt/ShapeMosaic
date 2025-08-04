@@ -1,3 +1,4 @@
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -11,7 +12,8 @@ import java.util.Comparator;
 import javax.imageio.ImageIO;
 
 public class Generator {
-    static double MAX_PIXEL_DISTANCE = Math.sqrt(255*255 + 255*255 + 255*255);
+
+    static double MAX_PIXEL_DISTANCE = Math.sqrt(255 * 255 + 255 * 255 + 255 * 255);
     int timeline_size = 5;
 
     int shape_limit = 3000;
@@ -24,7 +26,7 @@ public class Generator {
 
     // default settings
     public Generator() {
-        
+
     }
 
     public Generator(int timeline_size, int shape_limit, double mutation_factor, int generation_count) {
@@ -40,21 +42,22 @@ public class Generator {
             switch (arguments[1].toLowerCase()) {
                 case "shape_limit" -> {
                     this.shape_limit = Integer.parseInt(arguments[2]);
-                    System.err.println("Set shape_limit to " + this.shape_limit + ".");
+                    System.out.println("Set shape_limit to " + this.shape_limit + ".");
                 }
                 case "timeline_size" -> {
                     this.timeline_size = Integer.parseInt(arguments[2]);
-                    System.err.println("Set timeline_size to " + this.timeline_size + ".");
+                    System.out.println("Set timeline_size to " + this.timeline_size + ".");
                 }
                 case "mutation_factor" -> {
                     this.mutation_factor = Double.parseDouble(arguments[2]);
-                    System.err.println("Set mutation_factor to " + this.mutation_factor + ".");
+                    System.out.println("Set mutation_factor to " + this.mutation_factor + ".");
                 }
                 case "generation_count" -> {
                     this.generation_count = Integer.parseInt(arguments[2]);
-                    System.err.println("Set generation_count to " + this.generation_count + ".");
+                    System.out.println("Set generation_count to " + this.generation_count + ".");
                 }
-                default -> throw new AssertionError();
+                default ->
+                    System.out.println("Not a valid generation variable.");
             }
         } catch (NumberFormatException e) {
             System.out.println("Unable to set constant " + arguments[1] + " to " + arguments[2] + '.');
@@ -77,12 +80,13 @@ public class Generator {
         g.setRenderingHints(hints);
 
         ShapeManager sm = new ShapeManager(dimensions.x, dimensions.y, image);
-        
 
         for (int i = 0; i < shape_limit; i++) {
             long start = System.nanoTime();
 
-            if (generate_mask) {save_image(generate_image_mask(image, recreation), "images/mask.png");}
+            if (generate_mask) {
+                save_image(generate_image_mask(image, recreation), "images/mask.png");
+            }
 
             int[] mask_array = generate_mask_array(image, recreation);
 
@@ -93,7 +97,9 @@ public class Generator {
                 // if the algorithm fails to find a shape, perhaps the size queue is inaccurate (got stuck at a wayyy too high value)
                 // so we pop them, if size queue becomes empty, the system goes back to random
 
-                if (!size_queue.isEmpty()) { size_queue.remove(0); }
+                if (!size_queue.isEmpty()) {
+                    size_queue.remove(0);
+                }
                 System.out.println("Failed to generate shape in: " + (System.nanoTime() - start) / 1000000 + "ms.");
                 continue;
             }
@@ -115,11 +121,11 @@ public class Generator {
 
             update_size_queue(size_queue, shape);
 
-            if (get_average_size(size_queue) != null) { 
+            if (get_average_size(size_queue) != null) {
                 System.out.println("The average shape size was: " + get_average_size(size_queue));
             }
             System.out.println("Generated shape " + i + " in: " + (System.nanoTime() - start) / 1000000 + "ms.");
-            
+
             // save image and shape list data
             save_timeline(shape_timeline, "timeline.txt");
             save_image(recreation, output_path);
@@ -127,13 +133,11 @@ public class Generator {
     }
 
     static void save_timeline(ArrayList<Shape> shapes, String filepath) {
-        try {
-            FileWriter writer = new FileWriter("renderdata/" + filepath);
+        try (FileWriter writer = new FileWriter("renderdata/" + filepath)) {
             for (Shape s : shapes) {
                 writer.write(s.to_string());
                 writer.write('\n');
             }
-            writer.close();
             System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
             System.out.println("An error occurred.");
@@ -157,7 +161,7 @@ public class Generator {
         }
         if (!lst.isEmpty()) {
             return size_sum / lst.size();
-        } 
+        }
         return null;
     }
 
@@ -207,7 +211,7 @@ public class Generator {
     static public BufferedImage read_image(String filepath) {
         try {
             File img = new File(filepath);
-            BufferedImage image = ImageIO.read(img); 
+            BufferedImage image = ImageIO.read(img);
             return image;
         } catch (IOException e) {
             System.err.println("");
@@ -219,13 +223,14 @@ public class Generator {
         try {
             File outputfile = new File(filepath);
             ImageIO.write(image, "png", outputfile);
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
     }
 
     public static BufferedImage deepCopy(BufferedImage source) {
         BufferedImage bi = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
-        byte[] sourceData = ((DataBufferByte)source.getRaster().getDataBuffer()).getData();
-        byte[] biData = ((DataBufferByte)bi.getRaster().getDataBuffer()).getData();
+        byte[] sourceData = ((DataBufferByte) source.getRaster().getDataBuffer()).getData();
+        byte[] biData = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
         System.arraycopy(sourceData, 0, biData, 0, sourceData.length);
 
         return bi;
