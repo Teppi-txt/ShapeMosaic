@@ -38,26 +38,25 @@ public class Generator {
         // index 0 = set, index 1 = var_name, index 2 = value
         try {
             switch (arguments[1].toLowerCase()) {
-                case "shape_limit":
-                    this.shape_limit = Integer.valueOf(arguments[2]);
+                case "shape_limit" -> {
+                    this.shape_limit = Integer.parseInt(arguments[2]);
                     System.err.println("Set shape_limit to " + this.shape_limit + ".");
-                    break;
-                case "timeline_size":
-                    this.timeline_size = Integer.valueOf(arguments[2]);
+                }
+                case "timeline_size" -> {
+                    this.timeline_size = Integer.parseInt(arguments[2]);
                     System.err.println("Set timeline_size to " + this.timeline_size + ".");
-                    break;
-                case "mutation_factor":
-                    this.mutation_factor = Double.valueOf(arguments[2]);
+                }
+                case "mutation_factor" -> {
+                    this.mutation_factor = Double.parseDouble(arguments[2]);
                     System.err.println("Set mutation_factor to " + this.mutation_factor + ".");
-                    break;
-                case "generation_count":
-                    this.generation_count = Integer.valueOf(arguments[2]);
+                }
+                case "generation_count" -> {
+                    this.generation_count = Integer.parseInt(arguments[2]);
                     System.err.println("Set generation_count to " + this.generation_count + ".");
-                    break;
-                default:
-                    throw new AssertionError();
+                }
+                default -> throw new AssertionError();
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             System.out.println("Unable to set constant " + arguments[1] + " to " + arguments[2] + '.');
         }
     }
