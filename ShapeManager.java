@@ -42,7 +42,7 @@ public class ShapeManager {
 
         // get a random value within the mask
         int mask_value = (int) (Math.random() * position_mask[position_mask.length - 1]);
-        int index = Main.find_first_greater_than(position_mask, mask_value);
+        int index = find_first_greater_than(position_mask, mask_value);
 
         // isolate coordinates based on array index
         int x = index % maxX;
@@ -139,6 +139,7 @@ public class ShapeManager {
             }
         }
 
+        returnList.sort(Comparator.comparingDouble(ind -> -ind.fitness));
         return returnList;
     }
 
@@ -233,4 +234,22 @@ public class ShapeManager {
             Math.pow(r1 - r2, 2) + Math.pow(g1 - g2, 2) + Math.pow(b1 - b2, 2)
         );
     }
+
+    public static Integer find_first_greater_than(int[] array, int x) {
+        int left = 0;
+        int right = array.length - 1;
+        Integer result = 0; // default if no greater element is found
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (array[mid] > x) {
+                result = mid;       // candidate for first greater
+                right = mid - 1;    // look on the left side
+            } else {
+                left = mid + 1;     // look on the right side
+            }
+        }
+        return result;
+    }  
 }
