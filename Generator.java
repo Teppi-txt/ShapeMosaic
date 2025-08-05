@@ -21,7 +21,6 @@ public class Generator {
     int generation_count = 8;
 
     // enable if you want to continue from a previous render/image, with filename "output.png".
-    boolean use_existing_image = false;
     boolean generate_mask = false;
 
     // default settings
@@ -64,7 +63,7 @@ public class Generator {
         }
     }
 
-    public void generate(String target_path, String output_path) {
+    public void generate(String target_path, String output_dir, String starting_path) {
         BufferedImage image = read_image(target_path);
         Vector2 dimensions = new Vector2(image.getWidth(), image.getHeight());
 
@@ -72,7 +71,7 @@ public class Generator {
         ArrayList<Integer> size_queue = new ArrayList<>();
         ArrayList<Shape> shape_timeline = new ArrayList<>();
 
-        BufferedImage recreation = use_existing_image ? read_image("images/output.png") : new BufferedImage((int) dimensions.x, (int) dimensions.y, 5);
+        BufferedImage recreation = starting_path != null ? read_image("images/" + starting_path) : new BufferedImage((int) dimensions.x, (int) dimensions.y, 5);
         Graphics2D g = recreation.createGraphics();
 
         RenderingHints hints = new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -85,7 +84,7 @@ public class Generator {
             long start = System.nanoTime();
 
             if (generate_mask) {
-                save_image(generate_image_mask(image, recreation), "images/mask.png");
+                save_image(generate_image_mask(image, recreation), output_dir + "/mask.png");
             }
 
             int[] mask_array = generate_mask_array(image, recreation);
@@ -117,9 +116,11 @@ public class Generator {
             Shape shape = lst.get(0).shape;
             System.out.println("---------------------------------------------------------------------");
             System.out.println(shape.to_string());
+
             shape.draw(g);
 
             update_size_queue(size_queue, shape);
+            shape_timeline.add(shape);
 
             if (get_average_size(size_queue) != null) {
                 System.out.println("The average shape size was: " + get_average_size(size_queue));
@@ -127,13 +128,13 @@ public class Generator {
             System.out.println("Generated shape " + i + " in: " + (System.nanoTime() - start) / 1000000 + "ms.");
 
             // save image and shape list data
-            save_timeline(shape_timeline, "timeline.txt");
-            save_image(recreation, output_path);
+            save_timeline(shape_timeline, output_dir + "/timeline.txt");
+            save_image(recreation, output_dir + "/output.png");
         }
     }
 
     static void save_timeline(ArrayList<Shape> shapes, String filepath) {
-        try (FileWriter writer = new FileWriter("renderdata/" + filepath)) {
+        try (FileWriter writer = new FileWriter(filepath)) {
             for (Shape s : shapes) {
                 writer.write(s.to_string());
                 writer.write('\n');
