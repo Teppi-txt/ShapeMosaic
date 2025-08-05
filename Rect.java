@@ -89,8 +89,8 @@ public class Rect extends Shape {
 
     @Override
     public String to_string() {
-        String template = "Rect(width: " + this.width + ", height: " + this.height + ", top_left: (" + this.top_left.x + 
-                          ", " + this.top_left.y + "), angle: " + this.angle + ", color: " + this.color.toString() + ")";
+        String template = "shape: Rect | width: " + this.width + " | height: " + this.height + " | top_left: (" + this.top_left.x + 
+                          ", " + this.top_left.y + ") | angle: " + this.angle + " | color: " + this.color.toString();
         return template;
     }
 
@@ -98,6 +98,7 @@ public class Rect extends Shape {
     public Shape mutate(double mutation_factor) {
         int new_width = (int) (this.width * 1 + random_factor(mutation_factor));
         int new_height = (int) (this.height * 1 + random_factor(mutation_factor));
+
         Vector2 new_position = new Vector2(this.top_left.x + (int) (this.width * random_factor(mutation_factor)), 
                                            this.top_left.y + (int) (this.height * random_factor(mutation_factor)));
         int new_angle = (int) (this.angle + random_factor(mutation_factor) * 10);

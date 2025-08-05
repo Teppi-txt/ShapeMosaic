@@ -87,11 +87,11 @@ public class Polygon extends Shape {
 
     @Override
     public String to_string() {
-        String template = "Polygon(vertices: [";
+        String template = "shape: Polygon | vertices: [";
         for (Vector2 v : this.vertices) {
             template += "(" + v.x + ", " + v.y + ")";
         }
-        template += "], color: " + this.color.toString();
+        template += "] | color: " + this.color.toString();
         return template;
     }
 }

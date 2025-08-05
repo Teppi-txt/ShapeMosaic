@@ -112,7 +112,7 @@ public class Generator {
                 lst.sort(Comparator.comparingDouble(ind -> -ind.fitness));
             }
 
-            // postprocessing
+            // postgeneration handling
             Shape shape = lst.get(0).shape;
             System.out.println("---------------------------------------------------------------------");
             System.out.println(shape.to_string());

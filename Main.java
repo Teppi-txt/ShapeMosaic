@@ -2,7 +2,6 @@
 import java.io.File;
 import java.util.Scanner;
 
-
 public class Main {
 
     public static void main(String[] args) {
@@ -12,11 +11,10 @@ public class Main {
         // generate TARGET_NAME OUTPUT_NAME 
         // generate TARGET_NAME OUTPUT_NAME STARTING_IMAGE_PATH
         // loadtimeline PATH OUTPUT
-
         Generator generator = new Generator();
 
         System.out.println("CLI started:");
-        
+
         while (true) {
             Scanner scanner = new Scanner(System.in);
             String command = scanner.nextLine();
@@ -37,9 +35,8 @@ public class Main {
                     // name the output directory/file
                     System.out.println("Output directory name:");
                     String output = scanner.nextLine();
-                    
-                    // starting image, press enter if none
 
+                    // starting image, press enter if none
                     new File("images/outputs/" + output).mkdirs(); // make the output directory
                     generator.generate("images/inputs/" + start, "images/outputs/" + output, null);
 
