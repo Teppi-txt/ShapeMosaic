@@ -89,7 +89,7 @@ public class Polygon extends Shape {
     public String to_string() {
         String template = "shape: Polygon | vertices: [";
         for (Vector2 v : this.vertices) {
-            template += "(" + v.x + ", " + v.y + ")";
+            template += "(" + v.x + ", " + v.y + "), ";
         }
         template += "] | color: " + this.color.toString();
         return template;

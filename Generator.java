@@ -114,27 +114,31 @@ public class Generator {
 
             // postgeneration handling
             Shape shape = lst.get(0).shape;
-            System.out.println("---------------------------------------------------------------------");
-            System.out.println(shape.to_string());
 
             shape.draw(g);
 
             update_size_queue(size_queue, shape);
             shape_timeline.add(shape);
 
+            System.out.println("-------------------------------------------------------------------------");
+            System.out.println(shape.to_string());
+
             if (get_average_size(size_queue) != null) {
                 System.out.println("The average shape size was: " + get_average_size(size_queue));
             }
+            
             System.out.println("Generated shape " + i + " in: " + (System.nanoTime() - start) / 1000000 + "ms.");
 
             // save image and shape list data
-            save_timeline(shape_timeline, output_dir + "/timeline.txt");
+            save_timeline(dimensions, shape_timeline, output_dir + "/timeline.txt");
             save_image(recreation, output_dir + "/output.png");
         }
     }
 
-    static void save_timeline(ArrayList<Shape> shapes, String filepath) {
+    static void save_timeline(Vector2 image_dimensions, ArrayList<Shape> shapes, String filepath) {
         try (FileWriter writer = new FileWriter(filepath)) {
+            writer.write("width: " + image_dimensions.x + " | height: " + image_dimensions.y);
+
             for (Shape s : shapes) {
                 writer.write(s.to_string());
                 writer.write('\n');
